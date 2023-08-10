@@ -40,6 +40,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Camera")
 	TSubclassOf<UCameraShakeBase> JumpCameraShake;
 
+	UPROPERTY(VisibleAnywhere , BlueprintReadOnly , Category = "Camera")
+	UPawnNoiseEmitterComponent* NoiseEmitterComponent;
 public:
 	AFPSCharacter();
 

@@ -53,12 +53,17 @@ void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 		MyCharacter -> bIsCarryingObjective = true;
 		Destroy();
 	}
+	
 }
+
+
 
 void AFPSObjectiveActor::PlayEffects()
 {
 	//初始化粒子效果
 	UGameplayStatics::SpawnEmitterAtLocation(this , PickupFX , GetActorLocation());
 }
+
+
 
 

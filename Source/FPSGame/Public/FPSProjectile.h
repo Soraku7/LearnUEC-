@@ -6,11 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "FPSProjectile.generated.h"
 
-
 class UProjectileMovementComponent;
 class USphereComponent;
 class UParticleSystem;
-
 
 UCLASS()
 class AFPSProjectile : public AActor

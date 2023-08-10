@@ -39,6 +39,7 @@ void AFPSProjectile::BeginPlay()
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AFPSProjectile::Explode, 3.0f, false);
 }
 
+
 void AFPSProjectile::Explode()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, ExplosionFX, GetActorLocation(), FRotator::ZeroRotator, FVector(5.0f));
@@ -48,7 +49,6 @@ void AFPSProjectile::Explode()
 
 	Destroy();
 }
-
 
 void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -81,4 +81,8 @@ void AFPSProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPr
 
 		Explode();
 	}
+
+	MakeNoise(1.0f , GetInstigator());
 }
+
+

@@ -12,6 +12,7 @@ AFPSAIGuard::AFPSAIGuard()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 
 	PawnSensingComp -> OnSeePawn.AddDynamic(this , &AFPSAIGuard::OnPawnSeeing);
+	PawnSensingComp -> OnHearNoise.AddDynamic(this , &AFPSAIGuard::OnNoiseHeard);
 }
 
 // Called when the game starts or when spawned
@@ -27,9 +28,21 @@ void AFPSAIGuard::OnPawnSeeing(APawn* SeenPawn)
 	{
 		return;
 	}
-	DrawDebugSphere(GetWorld() , SeenPawn -> GetActorLocation() , 32.0f , 12 , FColor:: Yellow , false , 10.0f);
+	DrawDebugSphere(GetWorld() , SeenPawn -> GetActorLocation() , 32.0f , 12 , FColor:: Red , false , 10.0f);
 }
 
+
+void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
+{
+	DrawDebugSphere(GetWorld() , NoiseInstigator -> GetActorLocation() , 32.0f , 12 , FColor:: Green , false , 10.0f);
+
+	FVector Direction = Location - GetActorLocation();
+	Direction.Normalize();
+	FRotator NewLookAt = FRotationMatrix::MakeFromX(Direction).Rotator();
+	NewLookAt.Pitch = 0.0f;
+
+	SetActorRotation(NewLookAt);
+}
 // Called every frame
 void AFPSAIGuard::Tick(float DeltaTime)
 {

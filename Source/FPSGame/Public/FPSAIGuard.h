@@ -7,6 +7,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "FPSAIGuard.generated.h"
 
+
 UCLASS()
 class FPSGAME_API AFPSAIGuard : public ACharacter
 {
@@ -25,6 +26,9 @@ protected:
 
 	UFUNCTION()
 	void OnPawnSeeing(APawn* SeenPawn);
+
+	UFUNCTION()
+	void OnNoiseHeard(APawn* NoiseInstigator , const FVector& Location , float Volume);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -32,3 +36,5 @@ public:
 
 
 };
+
+

@@ -23,6 +23,7 @@ AFPSObjectiveActor::AFPSObjectiveActor()
 	
 	SphereComp -> SetupAttachment(MeshComp);
 
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -46,12 +47,16 @@ void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	PlayEffects();
 
-	//将OtherActor强制转换成AFPSCharacter类型，也是对MyCharacter进行初始化
-	AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
-	if(MyCharacter)
+	//服务器上进行
+	if(HasAuthority())
 	{
-		MyCharacter -> bIsCarryingObjective = true;
-		Destroy();
+		//将OtherActor强制转换成AFPSCharacter类型，也是对MyCharacter进行初始化
+		AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
+		if(MyCharacter)
+		{
+			MyCharacter -> bIsCarryingObjective = true;
+			Destroy();
+		}
 	}
 	
 }

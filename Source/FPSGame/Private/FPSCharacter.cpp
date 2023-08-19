@@ -49,6 +49,21 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
+void AFPSCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if(!IsLocallyControlled())
+	{
+		//Pitch值未uint8 只能存1~255 所以要进行解压
+		FRotator NewRot = CameraComponent -> GetRelativeRotation();
+		NewRot.Pitch = RemoteViewPitch * 360.0f / 255.0f;
+		CameraComponent -> SetRelativeRotation(NewRot);
+		
+	}
+
+}
+
 
 void AFPSCharacter::Landed(const FHitResult& Hit)
 {
@@ -84,6 +99,13 @@ void AFPSCharacter::OnJumped_Implementation()
 
 
 void AFPSCharacter::Fire()
+{
+	ServerFire();
+	 
+	
+}
+
+void AFPSCharacter::ServerFire_Implementation()
 {
 	// try and fire a projectile
 	if (ProjectileClass)
@@ -121,6 +143,11 @@ void AFPSCharacter::Fire()
 
 	// Play Muzzle FX
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, GunMeshComponent, "Muzzle");
+}
+
+bool AFPSCharacter::ServerFire_Validate()
+{
+	return true;
 }
 
 

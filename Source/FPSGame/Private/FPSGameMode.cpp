@@ -3,6 +3,7 @@
 #include "FPSGameMode.h"
 #include "FPSHUD.h"
 #include "FPSCharacter.h"
+#include "FPSGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -14,30 +15,50 @@ AFPSGameMode::AFPSGameMode()
 
 	// use our custom HUD class
 	HUDClass = AFPSHUD::StaticClass();
+
+	GameStateClass = AFPSGameState::StaticClass();
 }
 
 void AFPSGameMode::CompleteMission(APawn* InstigatorPawn , bool bMissionSuccess)
 {
-	if(InstigatorPawn)
+	
+	if (InstigatorPawn)
 	{
-		InstigatorPawn -> DisableInput(nullptr);
-		
-		TArray<AActor*> ReturnedActors;
-		UGameplayStatics::GetAllActorsOfClass(this , SpectatingViewpointClass , ReturnedActors);
-		
-		if(ReturnedActors.Num() > 0)
+		if (SpectatingViewpointClass)
 		{
-			AActor* NewViewTarget = ReturnedActors[0];
+			TArray<AActor*> ReturnedActors;
+			UGameplayStatics::GetAllActorsOfClass(this, SpectatingViewpointClass, ReturnedActors);
 
-			APlayerController* PC = Cast<APlayerController>(InstigatorPawn -> GetController());
-			if(PC)
+			// Change viewtarget if any valid actor found
+			if (ReturnedActors.Num() > 0)
 			{
-				PC ->SetViewTargetWithBlend(NewViewTarget , 0.5f , VTBlend_Cubic); 
+				AActor* NewViewTarget = ReturnedActors[0];
+
+				for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
+				{
+					APlayerController* PC = It->Get();
+					if (PC)
+					{
+						PC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+					}
+				}
 			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpectatingViewpointClass is nullptr. Please update GameMode class with valid subclass. Cannot change spectating view target."));
 		}
 	}
 
-	OnMissionCompleted(InstigatorPawn , bMissionSuccess);
+	AFPSGameState* GS = GetGameState<AFPSGameState>();
+	if (GS)
+	{
+		GS->MulticastOnMissionComplete(InstigatorPawn, bMissionSuccess);
+	}
+
+
+	OnMissionCompleted(InstigatorPawn, bMissionSuccess);
+
 
 }
 

@@ -58,7 +58,7 @@ public:
 	UAnimSequence* FireAnimation;
 
 	//公开于蓝图
-	UPROPERTY(BlueprintReadOnly , Category = "Gameplay")
+	UPROPERTY(Replicated ,BlueprintReadOnly , Category = "Gameplay")
 	bool bIsCarryingObjective;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
